@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "805818188042",
+    "firebase_url": "https://firstproject1-6241a.firebaseio.com",
+    "project_id": "firstproject1-6241a",
+    "storage_bucket": "firstproject1-6241a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:805818188042:android:0f2298a1a8b86c2b583af3",
+        "android_client_info": {
+          "package_name": "com.example.tracking_user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "805818188042-ndtru7bkvf6as101oqcbblb3jnth2dr7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtaCm7BjbdZ6_v-2cdUcZZpxX9M2YYhi8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "805818188042-ndtru7bkvf6as101oqcbblb3jnth2dr7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "805818188042-o6l4puf3107nus7v6eh35kbrtb0f6nnr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.trackingUser"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:805818188042:android:4bef55fa9ceb3a52583af3",
+        "android_client_info": {
+          "package_name": "ma.neweracom.neweraconnect.racco_final"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "805818188042-ndtru7bkvf6as101oqcbblb3jnth2dr7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtaCm7BjbdZ6_v-2cdUcZZpxX9M2YYhi8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "805818188042-ndtru7bkvf6as101oqcbblb3jnth2dr7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "805818188042-o6l4puf3107nus7v6eh35kbrtb0f6nnr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.trackingUser"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
