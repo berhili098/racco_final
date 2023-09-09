@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 import 'package:iconly/iconly.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../models/palette.dart';
-import '../../../data/widget.dart';
+import '../../../../models/palette.dart'; 
+import '../../../data/widgets/primary_textfield_widget.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {

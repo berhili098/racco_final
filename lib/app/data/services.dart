@@ -32,19 +32,24 @@ Future<TUser> getUserFromMemory() async {
 }
 
 saveUserToSession(TUser user) async {
-  await SessionManager().set('user', user);
+  if (user.id != null) {
+    await SessionManager().set('user', user);
+  }
 }
 
 resaveUserToSessionFromBd(TUser user) async {
   final connectivityResult = await (Connectivity().checkConnectivity());
-  if (connectivityResult != ConnectivityResult.none) {
-    TUser userFromBd = await getUserFromBd();
-    saveUserToSession(userFromBd);
+  if (connectivityResult != ConnectivityResult.none &&
+      user.id != null &&
+      user.id != 0) {
+    await getUserFromBd().then((value) {
+      saveUserToSession(value);
+    });
   }
 }
 
 Future<TUser> getUserFromBd() async {
-  TUser user = await getUserFromMemory();
+  TUser user = await getUserFromMemory(); 
   http.Response response;
 
   try {
@@ -54,7 +59,8 @@ Future<TUser> getUserFromBd() async {
     );
   } catch (e) {
     // Handle the error here, e.g., log or throw an exception
-    throw Exception('Failed to fetch user: $e');
+    // throw Exception('Failed to fetch user: $e');
+    return TUser();
   }
 
   if (response.statusCode == 200) {

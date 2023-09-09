@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 
 import '../data/services.dart';
+import '../modules/clientList/bindings/client_list_binding.dart';
+import '../modules/clientList/views/client_list_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -29,5 +31,10 @@ class AppPages {
     //   page: () => const DrawerView(),
     //   binding: DrawerBinding(),
     // ),
+    GetPage(
+      name: _Paths.CLIENT_LIST,
+      page: () => const ClientListView(),
+      binding: ClientListBinding(),
+    ),
   ];
 }
