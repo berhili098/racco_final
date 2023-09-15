@@ -4,8 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:racco_final/app/data/widgets/app_bar_widget.dart';
 import 'package:racco_final/app/data/widgets/sav_ticket_widget.dart';
-import 'package:racco_final/models/sav_ticket.dart';
+import 'package:racco_final/app/modules/home/controllers/home_controller.dart';
 
+import '../../../data/widgets/client_sav_modal_widget.dart';
 import '../controllers/client_list_controller.dart';
 
 class ClientListView extends GetView<ClientListController> {
@@ -13,9 +14,8 @@ class ClientListView extends GetView<ClientListController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarWidget(
-          title:
-              "Liste des clients ${controller.pageType == "sav" ? "Sav" : "Racco"}",
+        appBar: const AppBarWidget(
+          title: "Liste des clients Sav",
           show: true,
         ),
         backgroundColor: Colors.white,
@@ -25,16 +25,30 @@ class ClientListView extends GetView<ClientListController> {
             separatorBuilder: (context, index) => 10.verticalSpace,
             itemCount: controller.savList.length,
             itemBuilder: (context, index) {
-              return SavTicketItem(
-                affectation: SavTicket(
-                    id: 1,
-                    client: controller.savList[index].client,
-                    description: "Description",
-                    status: "En cours",
-                    type: "Sav"),
-                showInfoIcon: true,
-                onTap: () {},
-              );
+              return GetBuilder<HomeController>(
+                  init: HomeController(),
+                  builder: (cont) {
+                    return SavTicketItem(
+                      affectation: controller.savList[index],
+                      showInfoIcon: true,
+                      onTap: () {
+                        showModalBottomSheet(
+                            isScrollControlled: true,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(25.0),
+                                    topRight: Radius.circular(25.0))),
+                            context: context,
+                            builder: (context) {
+                              return ClientSavInfoModalWidget(
+                                user: cont.user!,
+                                withPlanification: false,
+                                affectation: controller.savList[index],
+                              );
+                            }).whenComplete(() {});
+                      },
+                    );
+                  });
             },
           ),
         ));

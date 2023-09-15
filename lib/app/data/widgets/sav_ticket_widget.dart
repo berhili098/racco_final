@@ -58,7 +58,7 @@ class SavTicketItem extends StatelessWidget {
                       color: Color(0XFF6171ba),
                     ),
                     child: const Icon(
-                      IconlyBroken.show,
+                      IconlyBold.profile,
                       // color: Color.fromRGBO(151, 72, 150, 1),
                       color: Colors.white,
                     ),

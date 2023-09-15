@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:racco_final/app/data/services.dart';
+import 'package:racco_final/models/affectation.dart';
 import 'package:racco_final/models/sav_ticket.dart';
+import 'package:racco_final/models/t_notification.dart';
 import 'package:racco_final/models/t_user.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,57 +17,46 @@ class HomeController extends GetxController {
   bool loading = false;
   bool loadingFind = false;
   List<SavTicket> tickets = [];
+  List<SavTicket> plannedTickets = [];
+  List<TNotication> notifications = [];
+  List<Affectations> affectations = [];
 
   @override
   void onInit() {
     super.onInit();
     loading = true;
-    tickets = [
-      SavTicket(
-        id: 1,
-        client: Client(
-            address: 'adslfj',
-            clientId: 'test',
-            sip: 'test sip',
-            name: "test test"),
-        description: 'Description 1',
-        status: 'En cours',
-        type: 'Type 1',
-      ),
-      SavTicket(
-        id: 1,
-        client: Client(
-            address: 'adslfj',
-            clientId: 'test222',
-            sip: 'test 2sip',
-            name: "test 2test"),
-        description: 'Description 1',
-        status: 'En cours',
-        type: 'Type 1',
-      ),
-    ];
+
     update();
+
     getUserFromMemory().then((value) async {
       user = value;
-      loading = false;
       update();
+      await getAllNotifications();
+      await getPlanifiedTicket();
+      await getAffectations();
+      getSavTickets().then((value2) {
+        loading = false;
+        update();
+      });
     });
   }
 
-  Future<void> demanderClients() async {
+  getSavTickets() async {
     loadingFind = true;
     update();
-    String deviceKey = await getDeviceIdentifier();
-    String buildNumber = await getBuild() ?? '0';
-    await http.post(
-      Uri.parse('$baseUrl/demanderClientsApi/${user!.id}'),
+    await http
+        .get(
+      Uri.parse('$baseUrl/getSavTickets/${user!.technicien!.id}'),
       headers: await Network.headers(),
-      body: {'device_key': deviceKey, 'build_number': buildNumber},
-    ).then((response) async {
-      print(response.body);
-
+    )
+        .then((response) async {
       switch (response.statusCode) {
         case 200:
+          tickets = [];
+          List<dynamic> data = jsonDecode(response.body)['tickets'];
+          for (var element in data) {
+            tickets.add(SavTicket.fromJson(element));
+          }
           loadingFind = false;
           update();
 
@@ -90,15 +81,178 @@ class HomeController extends GetxController {
     });
   }
 
-  reload() {
+  getAffectations() async {
+    loadingFind = true;
+    update();
+    await http
+        .get(
+      Uri.parse('$baseUrl/getAffectations/${user!.technicien!.id}'),
+      headers: await Network.headers(),
+    )
+        .then((response) {
+      switch (response.statusCode) {
+        case 200:
+          affectations = [];
+          List<dynamic> data = jsonDecode(response.body)['Affectations'];
+          for (var element in data) {
+            affectations.add(Affectations.fromJson(element));
+          }
+
+          loadingFind = false;
+          update();
+
+          break;
+        case 401:
+          Get.snackbar("Erreur", jsonDecode(response.body)['message'],
+              colorText: Colors.white, backgroundColor: Colors.red);
+          loadingFind = false;
+          update();
+          break;
+        default:
+          Get.snackbar('Erreur', jsonDecode(response.body)['message'],
+              colorText: Colors.white, backgroundColor: Colors.red);
+          loadingFind = false;
+          update();
+          break;
+      }
+    });
+  }
+
+  getPlanifiedTicket() async {
+    loadingFind = true;
+    update();
+    await http
+        .get(
+      Uri.parse('$baseUrl/getPlanifiedTicket/${user!.technicien!.id}'),
+      headers: await Network.headers(),
+    )
+        .then((response) async {
+      switch (response.statusCode) {
+        case 200:
+          plannedTickets = [];
+          List<dynamic> data = jsonDecode(response.body)['tickets'];
+          for (var element in data) {
+            plannedTickets.add(SavTicket.fromJson(element));
+          }
+          loadingFind = false;
+          update();
+
+          break;
+        case 401:
+          Get.snackbar("Erreur", jsonDecode(response.body)['message'],
+              colorText: Colors.white, backgroundColor: Colors.red);
+          loadingFind = false;
+          update();
+          break;
+        default:
+          Get.snackbar('Erreur', jsonDecode(response.body)['message'],
+              colorText: Colors.white, backgroundColor: Colors.red);
+          loadingFind = false;
+          update();
+          break;
+      }
+    }).catchError((error) {
+      loadingFind = false;
+      update();
+      throw error;
+    });
+  }
+
+  getAllNotifications() async {
+    loadingFind = true;
+    update();
+    await http
+        .get(
+      Uri.parse('$baseUrl/notifications/${user!.id}'),
+      headers: await Network.headers(),
+    )
+        .then((response) async {
+      switch (response.statusCode) {
+        case 200:
+          notifications = [];
+          List<dynamic> data = jsonDecode(response.body)['notifications'];
+          for (var element in data) {
+            notifications.add(TNotication.fromJson(element));
+          }
+          loadingFind = false;
+          update();
+
+          break;
+        case 401:
+          Get.snackbar("Erreur", jsonDecode(response.body)['message'],
+              colorText: Colors.white, backgroundColor: Colors.red);
+          loadingFind = false;
+          update();
+          break;
+        default:
+          Get.snackbar('Erreur', jsonDecode(response.body)['message'],
+              colorText: Colors.white, backgroundColor: Colors.red);
+          loadingFind = false;
+          update();
+          break;
+      }
+    }).catchError((error) {
+      loadingFind = false;
+      update();
+      throw error;
+    });
+  }
+
+  Future<void> demanderClients() async {
+    loadingFind = true;
+    update();
+    String deviceKey = await getDeviceIdentifier();
+    String buildNumber = await getBuild() ?? '0';
+    await http.post(
+      Uri.parse('$baseUrl/demanderClientsApi/${user!.id}'),
+      headers: await Network.headers(),
+      body: {'device_key': deviceKey, 'build_number': buildNumber},
+    ).then((response) async {
+      switch (response.statusCode) {
+        case 200:
+          Get.snackbar("Success", ' Clients importés avec succès',
+              colorText: Colors.white, backgroundColor: Colors.green);
+          loadingFind = false;
+          update();
+
+          break;
+        case 401:
+          Get.snackbar("Erreur", jsonDecode(response.body)['message'],
+              colorText: Colors.white, backgroundColor: Colors.red);
+          loadingFind = false;
+          update();
+          logoutApi();
+          break;
+        default:
+          Get.snackbar('Erreur', jsonDecode(response.body)['message'],
+              colorText: Colors.white, backgroundColor: Colors.red);
+          loadingFind = false;
+          update();
+          break;
+      }
+    }).catchError((error) {
+      loadingFind = false;
+      update();
+      throw error;
+    });
+  }
+
+  reload() async {
     loading = true;
     update();
 
     getUserFromBd().then((value) async {
-      resaveUserToSessionFromBd(value);
-      if (value.id != null) {
-        user = value;
-      }
+      getSavTickets().then((value2) async {
+        resaveUserToSessionFromBd(value);
+
+        if (value.id != null) {
+          user = value;
+          await getAllNotifications();
+          await getAffectations();
+
+          await getPlanifiedTicket();
+        }
+      });
 
       loading = false;
       update();

@@ -39,7 +39,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                     : const SizedBox(),
                 centerTitle: false,
                 title: SizedBox(
-                  width: 150.w,
+                  width: 200.w,
                   child: Text(
                     title ?? '',
                     maxLines: 2,

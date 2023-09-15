@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -49,13 +51,16 @@ resaveUserToSessionFromBd(TUser user) async {
 }
 
 Future<TUser> getUserFromBd() async {
-  TUser user = await getUserFromMemory(); 
+  TUser user = await getUserFromMemory();
+  String deviceKey = await getDeviceIdentifier();
+  String buildNumber = await getBuild() ?? '0';
   http.Response response;
 
   try {
-    response = await http.get(
+    response = await http.post(
       Uri.parse('$baseUrl/getCurrentUser/${user.id}'),
       headers: await Network.headers(),
+      body: {'device_key': deviceKey, 'build_number': buildNumber},
     );
   } catch (e) {
     // Handle the error here, e.g., log or throw an exception
@@ -67,6 +72,10 @@ Future<TUser> getUserFromBd() async {
     TUser returnedUser = TUser.fromJson(jsonDecode(response.body)['user']);
     return returnedUser;
   } else {
+    print(response.statusCode);
+    Get.snackbar('Erreur', jsonDecode(response.body)['message'],
+        colorText: Colors.white, backgroundColor: Colors.red);
+    logoutApi();
     // Handle unexpected status codes
     return TUser();
   }
@@ -148,10 +157,21 @@ getBuild() async {
 
 logoutApi() async {
   TUser user = await getUserFromMemory();
-  return await http.post(
+  return await http
+      .post(
     Uri.parse('$baseUrl/logoutApi/${user.id}'),
     headers: await Network.headers(),
-  );
+  )
+      .then((response) async {
+    await SessionManager().destroy();
+    Get.offAllNamed(Routes.LOGIN);
+    Get.snackbar(
+      "Déconnexion",
+      jsonDecode(response.body)['message'],
+      colorText: Colors.white,
+      backgroundColor: Colors.green,
+    );
+  });
 }
 
 logout() async {
@@ -173,16 +193,56 @@ logout() async {
     cancelTextColor: primaryColor,
     buttonColor: primaryColor,
     onConfirm: () async {
-      await logoutApi().then((response) async {
-        Get.snackbar(
-          "Déconnexion",
-          jsonDecode(response.body)['message'],
-          colorText: Colors.white,
-          backgroundColor: Colors.green,
-        );
-      });
-      await SessionManager().destroy();
-      Get.offAllNamed(Routes.LOGIN);
+      logoutApi();
     },
   );
+}
+
+bool timeAgo(DateTime fatchedDate) {
+  DateTime currentDate = DateTime.now();
+  Duration different = currentDate.difference(fatchedDate);
+  if (different.inMinutes > 0) {
+    return true;
+  }
+  return false;
+}
+
+Future<bool> checkInternet() async {
+  final connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.none) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+getImageFromGallery() async {
+  PermissionStatus storageStatus = await Permission.storage.status;
+
+  await Permission.storage.request();
+  final XFile? selectedImages = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 480,
+      maxWidth: 640,
+      imageQuality: 100);
+  return File(selectedImages!.path).readAsBytesSync();
+}
+
+getImageFromCamera() async {
+  PermissionStatus storageStatus = await Permission.storage.status;
+
+  await Permission.storage.request();
+  final XFile? selectedImages = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxHeight: 480,
+      maxWidth: 640,
+      imageQuality: 100);
+  return File(selectedImages!.path).readAsBytesSync();
+}
+
+deleteImage() {
+  Uint8List? image;
+
+  image = Uint8List(0);
+  return image;
 }

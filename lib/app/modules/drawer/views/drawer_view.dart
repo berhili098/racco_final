@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iconly/iconly.dart';
+import 'package:racco_final/app/modules/home/controllers/home_controller.dart';
+import 'package:racco_final/app/routes/app_pages.dart';
 
 import '../../../../models/t_user.dart';
 import '../../../data/services.dart';
@@ -44,21 +46,40 @@ class DrawerView extends GetView<drawer_controller.DrawerController> {
                 title: const Text("Client Affecter"),
                 onTap: () {},
               ),
-              ListTile(
-                leading: const Icon(IconlyLight.user),
-                title: const Text("Client Sav Affecter"),
-                onTap: () {},
-              ),
+              GetBuilder<HomeController>(
+                  init: HomeController(),
+                  builder: (controller) {
+                    return ListTile(
+                      leading: const Icon(IconlyLight.user),
+                      title: const Text("Client Sav Affecter"),
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(Routes.CLIENT_LIST,
+                            arguments: controller.tickets,
+                            parameters: {"pageType": "sav"});
+                      },
+                    );
+                  }),
               ListTile(
                 leading: const Icon(IconlyLight.calendar),
                 title: const Text("Client planifier"),
                 onTap: () {},
               ),
-              ListTile(
-                leading: const Icon(IconlyBold.calendar),
-                title: const Text("Client Sav planifier"),
-                onTap: () {},
-              ),
+              GetBuilder<HomeController>(
+                  init: HomeController(),
+                  builder: (controller) {
+                    return ListTile(
+                      leading: const Icon(IconlyBold.calendar),
+                      title: const Text("Client Sav planifier"),
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(
+                          Routes.PLANNED_CLIENTS,
+                          arguments: controller.plannedTickets,
+                        );
+                      },
+                    );
+                  }),
               ListTile(
                 leading: const Icon(Icons.history),
                 title: const Text("Historique"),

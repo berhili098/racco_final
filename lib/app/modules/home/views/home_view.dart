@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
-import 'package:iconly/iconly.dart'; 
+import 'package:iconly/iconly.dart';
 import 'package:racco_final/app/data/widgets/bottom_wave_clipper_widget.dart';
 import 'package:racco_final/app/data/widgets/card_statistique_widget.dart';
 import 'package:racco_final/app/modules/drawer/views/drawer_view.dart';
@@ -58,24 +58,32 @@ class HomeView extends GetView<HomeController> {
                               icon: SvgPicture.asset('assets/imgs/Sort-1.svg'),
                             ),
                             InkWell(
-                              onTap: () => false,
+                              onTap: () {
+                                Get.toNamed(Routes.NOTIFICATION);
+                              },
                               child: Stack(
                                 children: [
                                   SvgPicture.asset(
                                       'assets/imgs/Notification.svg'),
-                                  Container(
-                                      width: 20,
-                                      height: 20,
-                                      alignment: Alignment.center,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.red,
-                                      ),
-                                      child: const Text(
-                                        '2',
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 11),
-                                      ))
+                                  GetBuilder<HomeController>(
+                                      init: HomeController(),
+                                      builder: (controller) {
+                                        return Container(
+                                            width: 20,
+                                            height: 20,
+                                            alignment: Alignment.center,
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.red,
+                                            ),
+                                            child: Text(
+                                              controller.notifications.length
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 11),
+                                            ));
+                                      })
                                 ],
                               ),
                             ),
@@ -201,31 +209,58 @@ class HomeView extends GetView<HomeController> {
                           ),
                         ),
                         22.verticalSpace,
-                        CardStatistiqueWidget(
-                          icon: const Icon(Icons.abc),
-                          nbItem: 2,
-                          percent: 1.0,
-                          title: "Vos clients ",
-                          useProgress: true,
-                          onTap: () {
-                            Get.toNamed(Routes.CLIENT_LIST,
-                            arguments: controller.tickets,
-                                parameters: {"pageType": "racco" });
-                          },
-                        ),
+                        GetBuilder<HomeController>(
+                            init: HomeController(),
+                            builder: (controller) {
+                              return CardStatistiqueWidget(
+                                icon: const Icon(Icons.abc),
+                                nbItem: controller.affectations.length,
+                                percent: 1.0,
+                                title: "Vos clients ",
+                                useProgress: true,
+                                onTap: () {
+                                  Get.toNamed(Routes.AFFECTATION,
+                                      arguments: controller.affectations);
+                                },
+                              );
+                            }),
                         20.verticalSpace,
-                        CardStatistiqueWidget(
-                          icon: const Icon(Icons.abc),
-                          nbItem: 6,
-                          isSav: true,
-                          percent: 1.0,
-                          title: "Vos clients Sav ",
-                          useProgress: true,
-                          onTap: () {
-                            Get.toNamed(Routes.CLIENT_LIST,
-                                parameters: {"pageType": "sav"});
-                          },
-                        ),
+                        GetBuilder<HomeController>(
+                            init: HomeController(),
+                            builder: (controller) {
+                              return CardStatistiqueWidget(
+                                icon: const Icon(Icons.abc),
+                                nbItem: controller.tickets.length,
+                                isSav: true,
+                                percent: 1.0,
+                                title: "Vos clients Sav ",
+                                useProgress: true,
+                                onTap: () {
+                                  Get.toNamed(Routes.CLIENT_LIST,
+                                      arguments: controller.tickets,
+                                      parameters: {"pageType": "sav"});
+                                },
+                              );
+                            }),
+                        20.verticalSpace,
+                        GetBuilder<HomeController>(
+                            init: HomeController(),
+                            builder: (controller) {
+                              return CardStatistiqueWidget(
+                                icon: const Icon(Icons.abc),
+                                nbItem: controller.plannedTickets.length,
+                                isSav: true,
+                                percent: 1.0,
+                                title: "Vos clients Sav planifiés",
+                                useProgress: true,
+                                onTap: () {
+                                  Get.toNamed(
+                                    Routes.PLANNED_CLIENTS,
+                                    arguments: controller.plannedTickets,
+                                  );
+                                },
+                              );
+                            }),
                         40.verticalSpace,
                       ]),
                 ),

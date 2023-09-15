@@ -49,5 +49,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSCameraUsageDescription</key> 
+<string>Used to access the camera for capturing photos or videos.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Used to access the photo library for selecting photos or videos.</string>
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>Used to access your current location.</string>
 </dict>
 </plist>
