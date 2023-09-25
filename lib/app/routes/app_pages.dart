@@ -12,7 +12,7 @@ import '../modules/clientList/views/client_list_view.dart';
 import '../modules/declaration/bindings/declaration_binding.dart';
 import '../modules/declaration/views/declaration_view.dart';
 import '../modules/home/bindings/home_binding.dart';
-import '../modules/home/views/home_view.dart';
+import '../modules/home/views/home_view.dart'; 
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
@@ -78,5 +78,6 @@ class AppPages {
       page: () => const BlocageRaccoView(),
       binding: BlocageRaccoBinding(),
     ),
+    
   ];
 }

@@ -20,6 +20,7 @@ class HomeController extends GetxController {
   List<SavTicket> plannedTickets = [];
   List<TNotication> notifications = [];
   List<Affectations> affectations = [];
+  List<Affectations> plannedAffectations = [];
 
   @override
   void onInit() {
@@ -34,10 +35,51 @@ class HomeController extends GetxController {
       await getAllNotifications();
       await getPlanifiedTicket();
       await getAffectations();
+      await getPlanifiedAffectations();
       getSavTickets().then((value2) {
         loading = false;
         update();
       });
+    });
+  }
+
+  getPlanifiedAffectations() async {
+    loadingFind = true;
+    update();
+    await http
+        .get(
+      Uri.parse('$baseUrl/getPlannedAffectations/${user!.technicien!.id}'),
+      headers: await Network.headers(),
+    )
+        .then((response) {
+      print(response.body);
+      print(response.statusCode);
+
+      switch (response.statusCode) {
+        case 200:
+          plannedAffectations = [];
+          List<dynamic> data = jsonDecode(response.body)['Affectations'];
+          for (var element in data) {
+            plannedAffectations.add(Affectations.fromJson(element));
+          }
+          print(plannedAffectations.length);
+          loadingFind = false;
+          update();
+
+          break;
+        case 401:
+          Get.snackbar('Erreur', jsonDecode(response.body)['Affectations'],
+              colorText: Colors.white, backgroundColor: Colors.red);
+          loadingFind = false;
+          update();
+          break;
+        default:
+          Get.snackbar('Erreur', jsonDecode(response.body)['Affectations'],
+              colorText: Colors.white, backgroundColor: Colors.red);
+          loadingFind = false;
+          update();
+          break;
+      }
     });
   }
 
@@ -249,7 +291,7 @@ class HomeController extends GetxController {
           user = value;
           await getAllNotifications();
           await getAffectations();
-
+          await getPlanifiedAffectations();
           await getPlanifiedTicket();
         }
       });

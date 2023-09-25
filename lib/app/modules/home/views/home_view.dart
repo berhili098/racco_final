@@ -248,6 +248,24 @@ class HomeView extends GetView<HomeController> {
                             builder: (controller) {
                               return CardStatistiqueWidget(
                                 icon: const Icon(Icons.abc),
+                                nbItem: controller.plannedAffectations.length,
+                                isSav: false,
+                                percent: 1.0,
+                                title: "Vos clients Planifiés ",
+                                useProgress: true,
+                                onTap: () {
+                                  Get.toNamed(Routes.AFFECTATION,
+                                      arguments:
+                                          controller.plannedAffectations);
+                                },
+                              );
+                            }),
+                        20.verticalSpace,
+                        GetBuilder<HomeController>(
+                            init: HomeController(),
+                            builder: (controller) {
+                              return CardStatistiqueWidget(
+                                icon: const Icon(Icons.abc),
                                 nbItem: controller.plannedTickets.length,
                                 isSav: true,
                                 percent: 1.0,

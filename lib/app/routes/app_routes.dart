@@ -14,6 +14,7 @@ abstract class Routes {
   static const PLANNED_CLIENTS = _Paths.PLANNED_CLIENTS;
   static const AFFECTATION = _Paths.AFFECTATION;
   static const BLOCAGE_RACCO = _Paths.BLOCAGE_RACCO;
+  static const INSCRIPTION = _Paths.INSCRIPTION;
 }
 
 abstract class _Paths {
@@ -29,4 +30,5 @@ abstract class _Paths {
   static const PLANNED_CLIENTS = '/planned-clients';
   static const AFFECTATION = '/affectation';
   static const BLOCAGE_RACCO = '/blocage-racco';
+  static const INSCRIPTION = '/inscription';
 }
